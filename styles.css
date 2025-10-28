@@ -116,7 +116,7 @@ img {
 }
 
 .logo-img {
-    height: 70px;
+    height: 50px;
     width: auto;
     object-fit: contain;
     filter: brightness(1.2);
@@ -1342,15 +1342,15 @@ section {
     }
 
     .logo {
-        font-size: 1rem;
+        font-size: 0.9rem;
     }
 
     .logo-img {
-        height: 40px;
+        height: 25px;
     }
 
     .logo span {
-        font-size: 0.95rem;
+        font-size: 0.85rem;
     }
     
     .services-grid,
