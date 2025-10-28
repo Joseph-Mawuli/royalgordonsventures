@@ -116,7 +116,7 @@ img {
 }
 
 .logo-img {
-    height: 35px;
+    height: 70px;
     width: auto;
     object-fit: contain;
     filter: brightness(1.2);
@@ -374,8 +374,8 @@ section {
 }
 
 .title-icon {
-    width: 55px;
-    height: 55px;
+    width: 70px;
+    height: 70px;
     object-fit: contain;
 }
 
@@ -1249,8 +1249,8 @@ section {
     }
     
     .title-icon {
-        width: 50px;
-        height: 50px;
+        width: 65px;
+        height: 65px;
     }
 
 
@@ -1337,8 +1337,8 @@ section {
     }
     
     .title-icon {
-        width: 45px;
-        height: 45px;
+        width: 60px;
+        height: 60px;
     }
 
     .logo {
@@ -1346,7 +1346,7 @@ section {
     }
 
     .logo-img {
-        height: 32px;
+        height: 50px;
     }
 
     .logo span {
