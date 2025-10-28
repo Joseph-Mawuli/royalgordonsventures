@@ -116,7 +116,7 @@ img {
 }
 
 .logo-img {
-    height: 55px;
+    height: 45px;
     width: auto;
     object-fit: contain;
     filter: brightness(1.2);
@@ -1346,7 +1346,7 @@ section {
     }
 
     .logo-img {
-        height: 45px;
+        height: 40px;
     }
 
     .logo span {
