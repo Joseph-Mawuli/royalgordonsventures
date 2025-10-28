@@ -1342,16 +1342,15 @@ section {
     }
 
     .logo {
-        font-size: 0.9rem;
+        font-size: 1rem;
     }
 
     .logo-img {
-        height: 40px;
-        /* width: 45px; */
+        height: 45px;
     }
 
     .logo span {
-        font-size: 0.85rem;
+        font-size: 0.9rem;
     }
     
     .services-grid,
