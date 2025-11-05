@@ -781,6 +781,7 @@ section {
     border-radius: 10px;
     box-shadow: var(--shadow-small);
     transition: var(--transition);
+    position: relative;
 }
 
 .contact-item:hover {
@@ -819,10 +820,16 @@ section {
     font-weight: 500;
     cursor: pointer;
     text-decoration: none;
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    pointer-events: auto;
+    transition: var(--transition);
 }
 
 .contact-details a:hover {
     color: var(--dark-red);
+    text-decoration: underline;
 }
 
 
