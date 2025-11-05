@@ -1183,6 +1183,11 @@ section {
         margin-bottom: 50px;
     }
     
+    .contact-details .email-link {
+        margin-right: 10px;
+        word-break: break-all;
+    }
+    
     /* Navigation */
     .nav-menu {
         position: fixed;
@@ -1287,13 +1292,6 @@ section {
 
     .contact-content {
         grid-template-columns: 1fr;
-    }
-    
-    .contact-details a.email-link,
-    .footer-section a.email-link {
-        margin-right: 10px;
-        word-break: break-all;
-        overflow-wrap: break-word;
     }
 
     .footer-content {
