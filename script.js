@@ -70,20 +70,27 @@ window.addEventListener('scroll', highlightNav);
 // =====================
 // Smooth Scrolling
 // =====================
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        
-        if (target) {
-            const offsetTop = target.offsetTop - 70;
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
-            });
-        }
+function setupSmoothScrolling() {
+    document.querySelectorAll('a[href^="#"]:not(.email-link)').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const href = this.getAttribute('href');
+            
+            // Only process if it's a valid anchor link (starts with #)
+            if (href && href.startsWith('#') && href.length > 1) {
+                const target = document.querySelector(href);
+                
+                if (target) {
+                    const offsetTop = target.offsetTop - 70;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
     });
-});
+}
 
 // =====================
 // Gallery Filter
@@ -442,9 +449,48 @@ window.addEventListener('offline', () => {
 });
 
 // =====================
+// Smart Email Link Handler
+// =====================
+function setupEmailLinks() {
+    // Email template data
+    const emailAddress = 'royalgordonsventures@gmail.com';
+    const subject = 'Inquiry from Website';
+    const body = 'Hello%20Royal%20Gordons%20Ventures%2C%0A%0AI%E2%80%99d%20like%20to%20inquire%20about...';
+    
+    // Detect if device is mobile
+    function isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+               (window.innerWidth <= 768 && 'ontouchstart' in window);
+    }
+    
+    // Get all email links
+    const emailLinks = document.querySelectorAll('.email-link');
+    
+    emailLinks.forEach(link => {
+        const email = link.getAttribute('data-email') || emailAddress;
+        
+        if (isMobileDevice()) {
+            // Use mailto for mobile devices (opens Gmail app or default mail app)
+            link.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${body}`;
+        } else {
+            // Use Gmail web for desktop/laptop (opens Gmail in browser)
+            link.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${encodeURIComponent(subject)}&body=${body}`;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+        }
+    });
+}
+
+// =====================
 // Initial Setup
 // =====================
 document.addEventListener('DOMContentLoaded', () => {
+    // Setup smart email links first
+    setupEmailLinks();
+    
+    // Setup smooth scrolling after email links are configured
+    setupSmoothScrolling();
+    
     // Highlight first nav item on page load
     if (window.pageYOffset === 0) {
         const firstNavLink = document.querySelector('.nav-link[href="#home"]');
