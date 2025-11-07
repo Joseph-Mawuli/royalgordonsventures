@@ -815,6 +815,12 @@ section {
     color: #666;
 }
 
+.contact-details p i {
+    color: var(--gold);
+    margin-right: 10px;
+    width: 20px;
+}
+
 .contact-details a {
     color: var(--primary-red);
     font-weight: 500;
@@ -1079,6 +1085,16 @@ section {
     z-index: 999;
     transition: var(--transition);
     animation: pulse 2s infinite;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.whatsapp-float i {
+    font-size: 2rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .whatsapp-float:hover {
@@ -1115,6 +1131,16 @@ section {
     z-index: 999;
     transition: var(--transition);
     animation: pulseFacebook 2s infinite;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.facebook-float i {
+    font-size: 2rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .facebook-float:hover {
@@ -1342,6 +1368,8 @@ section {
         bottom: 20px;
         right: 20px;
         font-size: 1.5rem;
+        box-sizing: border-box;
+        padding: 0;
     }
 
     .facebook-float {
@@ -1350,6 +1378,17 @@ section {
         bottom: 80px;
         right: 20px;
         font-size: 1.5rem;
+        box-sizing: border-box;
+        padding: 0;
+    }
+    
+    .whatsapp-float i,
+    .facebook-float i {
+        font-size: 1.5rem;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .back-to-top {
