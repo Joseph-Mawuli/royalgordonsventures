@@ -95,36 +95,158 @@ function setupSmoothScrolling() {
 // =====================
 // Gallery Filter
 // =====================
-const filterBtns = document.querySelectorAll('.filter-btn');
-const galleryItems = document.querySelectorAll('.gallery-item');
+let filterClickHandler = null; // Store the handler to prevent duplicates
 
-filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
+function initializeGalleryFilter() {
+    const filterBtns = document.querySelectorAll('.filter-btn[data-filter]');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+
+    if (filterBtns.length === 0 || galleryItems.length === 0) {
+        return; // Exit if elements don't exist (e.g., on building_planning.html)
+    }
+
+    // Remove old event listeners if they exist
+    if (filterClickHandler) {
+        filterBtns.forEach(btn => {
+            btn.removeEventListener('click', filterClickHandler);
+        });
+    }
+
+    // Create new handler function
+    filterClickHandler = function(e) {
+        e.preventDefault(); // Prevent any default behavior
+        const btn = e.currentTarget;
+        
+        // Get fresh references to buttons and items (in case DOM changed)
+        const currentFilterBtns = document.querySelectorAll('.filter-btn[data-filter]');
+        const currentGalleryItems = document.querySelectorAll('.gallery-item');
+        
+        // Validate we have the necessary elements
+        if (!btn || currentFilterBtns.length === 0 || currentGalleryItems.length === 0) {
+            console.warn('Gallery filter: Missing required elements');
+            return;
+        }
+        
+        // Get the filter value - handle both hyphenated and non-hyphenated values
+        const filterValue = btn.getAttribute('data-filter');
+        
+        if (!filterValue) {
+            console.warn('Gallery filter: No data-filter attribute found');
+            return;
+        }
+        
         // Remove active class from all buttons
-        filterBtns.forEach(button => button.classList.remove('active'));
+        currentFilterBtns.forEach(button => {
+            button.classList.remove('active');
+        });
+        
         // Add active class to clicked button
         btn.classList.add('active');
         
-        const filterValue = btn.getAttribute('data-filter');
-        
-        galleryItems.forEach(item => {
-            if (filterValue === 'all') {
-                item.classList.remove('hide');
-                // Reset AOS animation
-                item.setAttribute('data-aos', 'zoom-in');
-            } else {
-                if (item.classList.contains(filterValue)) {
-                    item.classList.remove('hide');
-                    item.setAttribute('data-aos', 'zoom-in');
-                } else {
-                    item.classList.add('hide');
-                }
-            }
+        // First, reset all items by removing hide class
+        currentGalleryItems.forEach(item => {
+            item.classList.remove('hide');
         });
         
-        // Refresh AOS
-        AOS.refresh();
+        // Then apply the filter
+        if (filterValue === 'all') {
+            // Show all items and reset AOS animations
+            currentGalleryItems.forEach(item => {
+                item.setAttribute('data-aos', 'zoom-in');
+            });
+        } else {
+            // Filter items based on class name (handles hyphenated values like "building-planning")
+            currentGalleryItems.forEach(item => {
+                // Check if item has the matching class
+                if (item.classList.contains(filterValue)) {
+                    // Show matching items and reset AOS animation
+                    item.setAttribute('data-aos', 'zoom-in');
+                } else {
+                    // Hide non-matching items
+                    item.classList.add('hide');
+                }
+            });
+        }
+        
+        // Refresh AOS after a short delay to ensure DOM updates
+        setTimeout(() => {
+            AOS.refresh();
+        }, 100);
+    };
+
+    // Add event listeners
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', filterClickHandler);
     });
+}
+
+// Function to reset gallery to show all items
+function resetGalleryToAll() {
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    const filterBtns = document.querySelectorAll('.filter-btn[data-filter]');
+    
+    // Remove hide class from all items
+    galleryItems.forEach(item => {
+        item.classList.remove('hide');
+        item.setAttribute('data-aos', 'zoom-in');
+    });
+    
+    // Set "All" button as active
+    filterBtns.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-filter') === 'all') {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Refresh AOS
+    setTimeout(() => {
+        AOS.refresh();
+    }, 100);
+}
+
+// Initialize gallery filter when DOM is ready
+function setupGalleryOnLoad() {
+    initializeGalleryFilter();
+    
+    // Reset gallery to "All" on page load to ensure clean state
+    // This fixes the issue when returning from building_planning.html
+    resetGalleryToAll();
+}
+
+// Reinitialize gallery when navigating back to the page
+// This fixes the issue when returning from building_planning.html
+window.addEventListener('pageshow', (event) => {
+    // If page was loaded from cache (back/forward navigation)
+    if (event.persisted) {
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        if (galleryItems.length > 0) {
+            // Small delay to ensure DOM is fully ready
+            setTimeout(() => {
+                initializeGalleryFilter();
+                resetGalleryToAll();
+            }, 50);
+        }
+    }
+});
+
+// Also handle when page becomes visible (for cases where pageshow doesn't fire)
+let lastVisibilityChange = 0;
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        const now = Date.now();
+        // Throttle to prevent multiple rapid calls
+        if (now - lastVisibilityChange > 500) {
+            lastVisibilityChange = now;
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            if (galleryItems.length > 0) {
+                setTimeout(() => {
+                    initializeGalleryFilter();
+                    resetGalleryToAll();
+                }, 100);
+            }
+        }
+    }
 });
 
 // =====================
@@ -490,6 +612,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Setup smooth scrolling after email links are configured
     setupSmoothScrolling();
+    
+    // Setup gallery filter (will reset to "All" on load)
+    setupGalleryOnLoad();
     
     // Highlight first nav item on page load
     if (window.pageYOffset === 0) {
