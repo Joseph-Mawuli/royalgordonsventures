@@ -259,20 +259,39 @@ contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
     // Get form values
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const phone = document.getElementById('phone').value;
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
     const service = document.getElementById('service').value;
-    const message = document.getElementById('message').value;
+    const message = document.getElementById('message').value.trim();
     
-    // Validate form
+    // Validate form - check all fields are filled
     if (!name || !email || !phone || !service || !message) {
         showMessage('Please fill in all fields', 'error');
         return;
     }
     
+    // Validate name with regex (letters, spaces, hyphens, apostrophes only, 2-50 chars)
+    if (!validateName(name)) {
+        showMessage('Please enter a valid name (2-50 characters, letters and spaces only)', 'error');
+        return;
+    }
+    
+    // Validate email with regex
     if (!validateEmail(email)) {
         showMessage('Please enter a valid email address', 'error');
+        return;
+    }
+    
+    // Validate phone with regex (supports international formats including Ghana +233)
+    if (!validatePhone(phone)) {
+        showMessage('Please enter a valid phone number (e.g., +233 24 959 5115 or 0249595115)', 'error');
+        return;
+    }
+    
+    // Validate message length (minimum 10 characters)
+    if (message.length < 10) {
+        showMessage('Please enter a message with at least 10 characters', 'error');
         return;
     }
     
@@ -293,10 +312,27 @@ contactForm.addEventListener('submit', (e) => {
     window.location.href = whatsappUrl;
 });
 
-// Validate email function
+// Validate name function - letters, spaces, hyphens, apostrophes only, 2-50 characters
+function validateName(name) {
+    const re = /^[a-zA-Z\s'-]{2,50}$/;
+    return re.test(name);
+}
+
+// Validate email function - stricter email validation
 function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // More comprehensive email regex
+    const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     return re.test(email);
+}
+
+// Validate phone function - supports international formats including Ghana (+233)
+function validatePhone(phone) {
+    // Supports formats like: +233 24 959 5115, 0249595115, +233249595115, 233249595115
+    // Removes spaces, dashes, and parentheses for validation
+    const cleaned = phone.replace(/[\s\-\(\)]/g, '');
+    // Check for Ghana format (+233 or 233 followed by 9 digits) or general international format
+    const re = /^(\+?233|0)?[2-9]\d{8}$|^\+?[1-9]\d{1,14}$/;
+    return re.test(cleaned) && cleaned.length >= 9 && cleaned.length <= 15;
 }
 
 // Show form message
